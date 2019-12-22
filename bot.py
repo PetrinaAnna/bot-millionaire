@@ -96,33 +96,33 @@ def question_date(message):
 
 def reply_date(message):
 
-    userVictories = load(str(message.from_user.id) + '-victories')
-    userDefeats = load(str(message.from_user.id) + '-defeats')
+    user_win = load(str(message.from_user.id) + '-wins')
+    user_loss = load(str(message.from_user.id) + '-losses')
 
     if message.text in victories['right']:
         bot.send_message(message.from_user.id,'Правильно')
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
 
-        if userVictories >= 0 and userVictories != 'NONE':
-            userVictories = userVictories + 1
+        if user_win >= 0 and user_win != 'NONE':
+            user_win = user_win + 1
         else:
-            userVictories = 0
+            user_win = 0
 
-        save(str(message.from_user.id) + '-victories', userVictories)
+        save(str(message.from_user.id) + '-wins', user_win)
 
     else:
         bot.send_message(message.from_user.id, 'Не правильно')
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
-        if userDefeats >= 0 and userDefeats != 'NONE':
-            userDefeats = userDefeats + 1
+        if user_loss >= 0 and user_loss != 'NONE':
+            user_loss = user_loss + 1
         else:
-            userDefeats = 0
+            user_loss = 0
 
-        save(str(message.from_user.id) + '-defeats', userDefeats)
-        bot.send_message(message.from_user.id, 'Вы ответили правильно на: ' + userVictories + ' вопросов и неправильно на: ' + userDefeats)
+        save(str(message.from_user.id) + '-loses', user_loss)
+        bot.send_message(message.from_user.id, 'Вы ответили правильно на: ' + user_win + ' вопросов и неправильно на: ' + user_loss)
 
 bot.polling()
 
