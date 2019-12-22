@@ -100,14 +100,13 @@ def question_date(message):
         save(str(message.from_user.id), MAIN_STATE)
 
 
-def reply_date(message):
-    user_win = load(str(message.from_user.id) + '-wins')
-    user_loss = load(str(message.from_user.id) + '-losses')
-
+def reply_date(message, user_win=0, user_loss=0):
     if message.text in victories['right']:
         bot.send_message(message.from_user.id, 'Правильно')
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
+
+        user_win = load(str(message.from_user.id) + '-wins')
 
         if user_win >= 0 and user_win != 'NONE':
             user_win = user_win + 1
@@ -120,6 +119,8 @@ def reply_date(message):
         bot.send_message(message.from_user.id, 'Не правильно')
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
+
+        user_loss = load(str(message.from_user.id) + '-losses')
 
         if user_loss >= 0 and user_loss != 'NONE':
             user_loss = user_loss + 1
