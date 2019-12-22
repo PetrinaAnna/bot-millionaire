@@ -107,12 +107,11 @@ def question_date(message):
         for answer in result['answers']:
             text = text + '\n' + answer
 
-        markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+        markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, )
         buttons = []
 
         for answer in result['answers']:
             buttons.append(types.KeyboardButton(answer))
-
         markup.add(*buttons)
 
         bot.send_message(message.from_user.id, text, reply_markup=markup)
@@ -131,14 +130,12 @@ def question_date(message):
 def reply_date(message):
     if message.text in victories['right']:
         add_victories(message.from_user.id, 1)
-        reset_markup = types.ReplyKeyboardRemove
-        bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
+        bot.send_message(message.from_user.id, 'Правильно')
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
     else:
         add_defeats(message.from_user.id, 1)
-        reset_markup = types.ReplyKeyboardRemove
-        bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
+        bot.send_message(message.from_user.id, 'Не правильно')
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
