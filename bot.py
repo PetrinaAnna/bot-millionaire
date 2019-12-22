@@ -14,7 +14,7 @@ REPLY = 'reply_date'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 victories = {}
 states = {}
-calls = {'victories': 0, 'defeats': 0}
+# calls = {'victories': 0, 'defeats': 0}
 
 
 def save(key, value):
