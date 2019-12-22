@@ -78,7 +78,7 @@ def dispatcher(message):
 
 def main_handler(message):
     if message.text == '/start':
-        reset_markup = types.ReplyKeyboardRemove
+        reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
@@ -130,12 +130,14 @@ def question_date(message):
 def reply_date(message):
     if message.text in victories['right']:
         add_victories(message.from_user.id, 1)
-        bot.send_message(message.from_user.id, 'Правильно')
+        reset_markup = types.ReplyKeyboardRemove()
+        bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
     else:
         add_defeats(message.from_user.id, 1)
-        bot.send_message(message.from_user.id, 'Не правильно')
+        reset_markup = types.ReplyKeyboardRemove()
+        bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
