@@ -1,8 +1,9 @@
-import telebot
-from telebot import TeleBot
-
 import os
 import redis
+
+import telebot
+from telebot import TeleBot
+from telebot import types
 
 REDIS_URL = os.environ.get('REDIS_URL')
 redis_db = redis.from_url(REDIS_URL, decode_responses=True)
@@ -77,7 +78,8 @@ def dispatcher(message):
 
 def main_handler(message):
     if message.text == '/start':
-        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"')
+        reset_markup = types.ReplyKeyboardRemove
+        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
@@ -88,7 +90,8 @@ def main_handler(message):
 
 
 def question_date(message):
-    if message.text == 'Спроси меня вопрос':
+    if message.text == 'Задай мне вопрос':
+
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
@@ -96,16 +99,29 @@ def question_date(message):
         victory = result['answers'][0]
         victories['right'] = victory
         print(victories)
+
         import random
         random.shuffle(result['answers'])
         text = result['question']
+
         for answer in result['answers']:
             text = text + '\n' + answer
-        bot.send_message(message.from_user.id, text)
+
+        markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, )
+        buttons = []
+
+        for answer in result['answers']:
+            buttons.append(types.KeyboardButton(answer))
+
+        markup.add(*buttons)
+
+        bot.send_message(message.from_user.id, text, reply_markup=markup)
         # states[message.from_user.id] = REPLY
         save(str(message.from_user.id), REPLY)
+
     elif message.text == 'Покажи счет':
         bot.send_message(message.from_user.id, 'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
+
     else:
         bot.reply_to(message, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
