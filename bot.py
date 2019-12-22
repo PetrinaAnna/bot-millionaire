@@ -39,7 +39,7 @@ def dispatcher (message):
 
     user_id = message.from_user.id
     # state = states.get(user_id, MAIN_STATE)
-    state = str(message.from_user.id)
+    state = load(str(message.from_user.id))
 
     # # save('state:{user_id}'.format(message.from_user.id), MAIN_STATE)
     # # load('state:{user_id}'.format(message.from_user.id))
