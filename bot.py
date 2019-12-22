@@ -25,9 +25,9 @@ token = os.environ["TELEGRAM_TOKEN"]
 
 bot: TeleBot = telebot.TeleBot(token)
 
-MAIN_STATE='main'
-QUESTION='question_date'
-REPLY='reply_date'
+MAIN_STATE = 'main'
+QUESTION = 'question_date'
+REPLY = 'reply_date'
 
 api_url = 'https://stepik.akentev.com/api/millionaire'
 victories = {}
@@ -39,7 +39,7 @@ def dispatcher (message):
 
     user_id = message.from_user.id
     # state = states.get(user_id, MAIN_STATE)
-    state = load('state:{user_id}'.format(message.from_user.id))
+    state = str(message.from_user.id)
 
     # # save('state:{user_id}'.format(message.from_user.id), MAIN_STATE)
     # # load('state:{user_id}'.format(message.from_user.id))
@@ -47,6 +47,7 @@ def dispatcher (message):
     # user_state = str(message.from_user.id)
 
     print('current state', user_id, state)
+
     if state == MAIN_STATE:
      main_handler(message)
     elif state == QUESTION:
@@ -55,12 +56,12 @@ def dispatcher (message):
      reply_date(message)
 
 def main_handler (message):
-    if message.text=='/start':
+    if message.text == '/start':
        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"')
        # states[message.from_user.id] = MAIN_STATE
        save(str(message.from_user.id), MAIN_STATE)
 
-    elif message.text =='Привет':
+    elif message.text == 'Привет':
        bot.send_message(message.from_user.id, 'Ну привет')
        # states[message.from_user.id] = QUESTION
        save(str(message.from_user.id), QUESTION)
