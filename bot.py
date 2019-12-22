@@ -5,7 +5,7 @@ import os
 import redis
 
 REDIS_URL = os.environ.get('REDIS_URL')
-redis_db = redis.from_url(REDIS_URL)
+redis_db = redis.from_url(REDIS_URL, decode_responses=True)
 
 MAIN_STATE = 'main'
 QUESTION = 'question_date'
@@ -17,14 +17,14 @@ states = {}
 
 def save(key, value):
     if REDIS_URL:
-        redis_db = redis.from_url(REDIS_URL)
+        redis_db = redis.from_url(REDIS_URL, decode_responses=True)
         redis_db.set(key, value)
     else:
         states[key] = value
 
 def load(key):
     if REDIS_URL:
-        redis_db = redis.from_url(REDIS_URL)
+        redis_db = redis.from_url(REDIS_URL, decode_responses=True)
         return redis_db.get(key) or MAIN_STATE
     else:
         return states.get(key) or MAIN_STATE
