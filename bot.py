@@ -5,6 +5,7 @@ import os
 import redis
 
 REDIS_URL = os.environ.get('REDIS_URL')
+redis_db = redis.from_url(REDIS_URL)
 
 MAIN_STATE = 'main'
 QUESTION = 'question_date'
@@ -31,8 +32,6 @@ def load(key):
 token = os.environ["TELEGRAM_TOKEN"]
 
 bot: TeleBot = telebot.TeleBot(token)
-
-
 
 @bot.message_handler(func=lambda message: True)
 
