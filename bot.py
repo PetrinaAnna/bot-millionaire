@@ -3,25 +3,23 @@ from telebot import TeleBot
 
 import os
 import redis
-import json
-
 
 REDIS_URL = os.environ.get('REDIS_URL')
-dict_db = {}
+states = {}
 
 def save(key, value):
     if REDIS_URL:
         redis_db = redis.from_url(REDIS_URL)
         redis_db.set(key, value)
     else:
-        dict_db[key] = value
+        states[key] = value
 
 def load(key):
     if REDIS_URL:
         redis_db = redis.from_url(REDIS_URL)
         return redis_db.get(key)
     else:
-        return dict_db.get(key)
+        return states.get(key)
 
 token = os.environ["TELEGRAM_TOKEN"]
 
@@ -31,18 +29,20 @@ MAIN_STATE='main'
 QUESTION='question_date'
 REPLY='reply_date'
 
-states = {}
 api_url = 'https://stepik.akentev.com/api/millionaire'
 victories = {}
+
 @bot.message_handler(func=lambda message: True)
 
 def dispatcher (message):
     print (states)
 
     user_id = message.from_user.id
-    state = states.get(user_id, MAIN_STATE)
+    # state = states.get(user_id, MAIN_STATE)
+    state = load(str(message.from_user.id))
 
     # # save('state:{user_id}'.format(message.from_user.id), MAIN_STATE)
+    # # load('state:{user_id}'.format(message.from_user.id))
     # save(str(message.from_user.id), MAIN_STATE)
     # user_state = str(message.from_user.id)
 
@@ -57,11 +57,13 @@ def dispatcher (message):
 def main_handler (message):
     if message.text=='/start':
        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"')
-       states[message.from_user.id] = MAIN_STATE
+       # states[message.from_user.id] = MAIN_STATE
+       save(str(message.from_user.id), MAIN_STATE)
 
     elif message.text =='Привет':
        bot.send_message(message.from_user.id, 'Ну привет')
-       states[message.from_user.id] = QUESTION
+       # states[message.from_user.id] = QUESTION
+       save(str(message.from_user.id), QUESTION)
 
 def question_date(message):
     if message.text == 'Спроси меня вопрос':
@@ -78,18 +80,22 @@ def question_date(message):
         for answer in result['answers']:
             text = text +'\n' + answer
         bot.send_message(message.from_user.id, text)
-        states[message.from_user.id] = REPLY
+        # states[message.from_user.id] = REPLY
+        save(str(message.from_user.id), REPLY)
     else:
         bot.reply_to(message, 'Я тебя не понял')
-        states[message.from_user.id] = MAIN_STATE
+        # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
 
 def reply_date(message):
     if message.text in victories['right']:
        bot.send_message(message.from_user.id,'Правильно')
-       states[message.from_user.id] = MAIN_STATE
+       # states[message.from_user.id] = MAIN_STATE
+       save(str(message.from_user.id), MAIN_STATE)
     else:
        bot.send_message(message.from_user.id,'Не правильно')
-       states[message.from_user.id] = MAIN_STATE
+       # states[message.from_user.id] = MAIN_STATE
+       save(str(message.from_user.id), MAIN_STATE)
 
 bot.polling()
 
