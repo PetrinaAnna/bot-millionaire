@@ -92,8 +92,8 @@ def question_date(message):
 def reply_date(message):
     if message.text in victories['right']:
        bot.send_message(message.from_user.id,'Правильно')
-       # states[message.from_user.id] = MAIN_STATE
-       save(str(message.from_user.id), MAIN_STATE)
+       # states[message.from_user.id] = QUESTION
+       save(str(message.from_user.id), QUESTION)
     else:
        bot.send_message(message.from_user.id,'Не правильно')
        # states[message.from_user.id] = MAIN_STATE
