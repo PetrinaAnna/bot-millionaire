@@ -100,36 +100,47 @@ def question_date(message):
         save(str(message.from_user.id), MAIN_STATE)
 
 
-def reply_date(message, user_win=0, user_loss=0):
+def reply_date(message):
     if message.text in victories['right']:
         bot.send_message(message.from_user.id, 'Правильно')
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
-
-        user_win = load(str(message.from_user.id) + '-wins')
-
-        if user_win >= 0 and user_win != 'NONE':
-            user_win = user_win + 1
-        else:
-            user_win = 0
-
-        save(str(message.from_user.id) + '-wins', user_win)
 
     else:
         bot.send_message(message.from_user.id, 'Не правильно')
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
-        user_loss = load(str(message.from_user.id) + '-losses')
-
-        if user_loss >= 0 and user_loss != 'NONE':
-            user_loss = user_loss + 1
-        else:
-            user_loss = 0
-
-        save(str(message.from_user.id) + '-loses', user_loss)
-        bot.send_message(message.from_user.id,
-                         'Вы ответили правильно на: ' + user_win + ' вопросов и неправильно на: ' + user_loss)
+# def reply_date(message, user_win=0, user_loss=0):
+#     if message.text in victories['right']:
+#         bot.send_message(message.from_user.id, 'Правильно')
+#         # states[message.from_user.id] = QUESTION
+#         save(str(message.from_user.id), QUESTION)
+#
+#         user_win = load(str(message.from_user.id) + '-wins')
+#
+#         if user_win >= 0 and user_win != 'NONE':
+#             user_win = user_win + 1
+#         else:
+#             user_win = 0
+#
+#         save(str(message.from_user.id) + '-wins', user_win)
+#
+#     else:
+#         bot.send_message(message.from_user.id, 'Не правильно')
+#         # states[message.from_user.id] = MAIN_STATE
+#         save(str(message.from_user.id), MAIN_STATE)
+#
+#         user_loss = load(str(message.from_user.id) + '-losses')
+#
+#         if user_loss >= 0 and user_loss != 'NONE':
+#             user_loss = user_loss + 1
+#         else:
+#             user_loss = 0
+#
+#         save(str(message.from_user.id) + '-loses', user_loss)
+#         bot.send_message(message.from_user.id,
+#                          'Вы ответили правильно на: ' + user_win + ' вопросов и неправильно на: ' + user_loss)
 
 
 bot.polling()
