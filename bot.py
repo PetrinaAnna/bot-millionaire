@@ -14,12 +14,12 @@ def save(key, value):
     else:
         states[key] = value
 
-def load(key, value):
+def load(key):
     if REDIS_URL:
         redis_db = redis.from_url(REDIS_URL)
-        return redis_db.get(key, value)
+        return redis_db.get(key) or "MAIN_STATE"
     else:
-        return states.get(key, value)
+        return states.get(key) or "MAIN_STATE"
 
 token = os.environ["TELEGRAM_TOKEN"]
 
@@ -39,7 +39,7 @@ def dispatcher (message):
 
     user_id = message.from_user.id
     # state = states.get(user_id, MAIN_STATE)
-    state = load(str(message.from_user.id), MAIN_STATE)
+    state = load(str(message.from_user.id))
 
     # # save('state:{user_id}'.format(message.from_user.id), MAIN_STATE)
     # # load('state:{user_id}'.format(message.from_user.id))
