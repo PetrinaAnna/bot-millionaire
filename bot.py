@@ -96,8 +96,8 @@ def question_date(message):
 
 def reply_date(message):
 
-    userVictories = load(str(message.from_user.id + '-victories'))
-    userDefeats = load(str(message.from_user.id + '-defeats'))
+    userVictories = load(str(message.from_user.id) + '-victories')
+    userDefeats = load(str(message.from_user.id) + '-defeats')
 
     if message.text in victories['right']:
         bot.send_message(message.from_user.id,'Правильно')
@@ -109,7 +109,7 @@ def reply_date(message):
         else:
             userVictories = 0
 
-        save(str(message.from_user.id + '-victories'), userVictories)
+        save(str(message.from_user.id) + '-victories', userVictories)
 
     else:
         bot.send_message(message.from_user.id, 'Не правильно')
@@ -121,7 +121,7 @@ def reply_date(message):
         else:
             userDefeats = 0
 
-        save(str(message.from_user.id + '-defeats'), userDefeats)
+        save(str(message.from_user.id) + '-defeats', userDefeats)
         bot.send_message(message.from_user.id, 'Вы ответили правильно на: ' + userVictories + ' вопросов и неправильно на: ' + userDefeats)
 
 bot.polling()
