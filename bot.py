@@ -14,6 +14,10 @@ REPLY = 'reply_date'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 victories = {}
 states = {}
+calls = {
+    "wins": 0,
+    "losses": 0
+}
 
 def save(key, value):
     if REDIS_URL:
@@ -84,6 +88,8 @@ def question_date(message):
         bot.send_message(message.from_user.id, text)
         # states[message.from_user.id] = REPLY
         save(str(message.from_user.id), REPLY)
+    elif message.text == 'Покажи счет':
+        bot.send_message(message.from_user.id, 'Побед: ' + str(calls['wins']) + 'Поражений: ' + str(calls['losses']))
     else:
         bot.reply_to(message, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
@@ -91,13 +97,14 @@ def question_date(message):
 
 def reply_date(message):
     if message.text in victories['right']:
-       bot.send_message(message.from_user.id,'Правильно')
-       # states[message.from_user.id] = QUESTION
-       save(str(message.from_user.id), QUESTION)
+        calls['wins'] += 1
+        bot.send_message(message.from_user.id,'Правильно')
+        # states[message.from_user.id] = QUESTION
+        save(str(message.from_user.id), QUESTION)
     else:
-       bot.send_message(message.from_user.id,'Не правильно')
-       # states[message.from_user.id] = MAIN_STATE
-       save(str(message.from_user.id), MAIN_STATE)
+        calls['losses'] += 1
+        bot.send_message(message.from_user.id,'Не правильно')
+        # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
 
 bot.polling()
-
