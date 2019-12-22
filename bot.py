@@ -14,6 +14,7 @@ REPLY = 'reply_date'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 victories = {}
 states = {}
+calls = {'victories': 0, 'defeats': 0}
 
 def save(key, value):
     if REDIS_URL:
@@ -51,8 +52,10 @@ def dispatcher (message):
 
     if state == MAIN_STATE:
      main_handler(message)
+
     elif state == QUESTION:
      question_date(message)
+
     elif state == REPLY:
      reply_date(message)
 
@@ -69,6 +72,7 @@ def main_handler (message):
 
 def question_date(message):
     if message.text == 'Спроси меня вопрос':
+
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
@@ -76,6 +80,7 @@ def question_date(message):
         victory = result['answers'][0]
         victories['right'] = victory
         print(victories)
+
         import random
         random.shuffle(result['answers'])
         text = result['question']
@@ -90,14 +95,34 @@ def question_date(message):
         save(str(message.from_user.id), MAIN_STATE)
 
 def reply_date(message):
+
+    userVictories = load(str(message.from_user.id + '-victories'))
+    userDefeats = load(str(message.from_user.id + '-defeats'))
+
     if message.text in victories['right']:
-       bot.send_message(message.from_user.id,'Правильно')
-       # states[message.from_user.id] = QUESTION
-       save(str(message.from_user.id), QUESTION)
+        bot.send_message(message.from_user.id,'Правильно')
+        # states[message.from_user.id] = QUESTION
+        save(str(message.from_user.id), QUESTION)
+
+        if userVictories >= 0 and userVictories != 'NONE':
+            userVictories = userVictories + 1
+        else:
+            userVictories = 0
+
+        save(str(message.from_user.id + '-victories'), userVictories)
+
     else:
-       bot.send_message(message.from_user.id,'Не правильно')
-       # states[message.from_user.id] = MAIN_STATE
-       save(str(message.from_user.id), MAIN_STATE)
+        bot.send_message(message.from_user.id, 'Не правильно')
+        # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
+
+        if userDefeats >= 0 and userDefeats != 'NONE':
+            userDefeats = userDefeats + 1
+        else:
+            userDefeats = 0
+
+        save(str(message.from_user.id + '-defeats'), userDefeats)
+        bot.send_message(message.from_user.id, 'Вы ответили правильно на: ' + userVictories + ' вопросов и неправильно на: ' + userDefeats)
 
 bot.polling()
 
