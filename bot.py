@@ -5,6 +5,13 @@ import os
 import redis
 
 REDIS_URL = os.environ.get('REDIS_URL')
+
+MAIN_STATE = 'main'
+QUESTION = 'question_date'
+REPLY = 'reply_date'
+
+api_url = 'https://stepik.akentev.com/api/millionaire'
+victories = {}
 states = {}
 
 def save(key, value):
@@ -17,20 +24,15 @@ def save(key, value):
 def load(key):
     if REDIS_URL:
         redis_db = redis.from_url(REDIS_URL)
-        return redis_db.get(key) or "MAIN_STATE"
+        return redis_db.get(key) or MAIN_STATE
     else:
-        return states.get(key) or "MAIN_STATE"
+        return states.get(key) or MAIN_STATE
 
 token = os.environ["TELEGRAM_TOKEN"]
 
 bot: TeleBot = telebot.TeleBot(token)
 
-MAIN_STATE = 'main'
-QUESTION = 'question_date'
-REPLY = 'reply_date'
 
-api_url = 'https://stepik.akentev.com/api/millionaire'
-victories = {}
 
 @bot.message_handler(func=lambda message: True)
 
