@@ -14,7 +14,7 @@ REPLY = 'reply_date'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 correct_answer = {}
 states = {}
-score = {}
+score = {'victories': 0, 'defeats': 0}
 
 
 def add_defeats(user, score_num):
@@ -117,11 +117,13 @@ def question_date(message):
         bot.send_message(message.from_user.id, text, reply_markup=markup)
         # states[message.from_user.id] = REPLY
         save(str(message.from_user.id), REPLY)
-
-
-
+    elif message.text == 'Покажи счет':
+        bot.send_message(message.from_user.id,
+                             'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
+        # states[message.from_user.id] = REPLY
+        save(str(message.from_user.id), REPLY)
     else:
-        bot.reply_to(message, 'Я тебя не понял')
+        bot.send_message(message.from_user.id, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
@@ -133,20 +135,20 @@ def reply_date(message):
         add_victories(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
-        if message.text == 'Покажи счет':
-            bot.send_message(message.from_user.id,
-                             'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
     elif message.text != correct_answer:
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
-        if message.text == 'Покажи счет':
-            bot.send_message(message.from_user.id,
-                             'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
+
+    else:
+        bot.send_message(message.from_user.id, 'Я тебя не понял')
+        # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
+
 
 
 
