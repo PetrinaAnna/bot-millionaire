@@ -90,14 +90,13 @@ def main_handler(message):
 
 
 def question_date(message):
-    if message.text == 'Задай мне вопрос':
-
+    if message.text == 'Задай мне вопрос' or bot.send_message(message.from_user.id, 'Правильно'):
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
         print(result)
         victory = result['answers'][0]
-        victories['right'] = victory
+        victories['r'] = victory
         print(victories)
 
         import random
@@ -128,7 +127,7 @@ def question_date(message):
 
 
 def reply_date(message):
-    if message.text in victories['right']:
+    if message.text in victories['r']:
         add_victories(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
