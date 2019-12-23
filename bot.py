@@ -110,7 +110,8 @@ def question_date(message):
         print(result)
         victory = result['answers'][0]
         #victories['right'] = victory
-        save_victory ('right', victory)
+        load_victory('right')
+        save_victory('right',victory)
         print(redis_victories)
 
         import random
