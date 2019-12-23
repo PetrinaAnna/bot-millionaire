@@ -81,8 +81,10 @@ def main_handler(message):
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
-    elif message.text == 'Привет':
-        bot.send_message(message.from_user.id, 'Ну привет')
+    elif message.text == 'Задай мне вопрос':
+        markup = types.ReplyKeyboardRemove()
+        bot.send_message(message.from_user.id, 'Секундочку, только уточню некоторые детали:на вопросы какой сложности Вы хотели бы отвечать? выберите 1, 2 или 3')
+        reset_markup = types.ReplyKeyboardRemove()
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
 
