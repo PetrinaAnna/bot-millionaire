@@ -88,7 +88,7 @@ def main_handler(message):
 
 
 def question_date(message):
-    if message.text == 'Задай мне вопрос' or bot.send_message('Правильно'):
+    if message.text == 'Задай мне вопрос' or 'Следующий вопрос':
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
