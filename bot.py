@@ -6,8 +6,8 @@ from telebot import TeleBot
 from telebot import types
 
 REDIS_URL = os.environ.get('REDIS_URL')
-redis_db = redis.from_url(REDIS_URL, decode_responses=True)
-
+redis_states = redis.from_url(REDIS_URL, decode_responses=True)
+redis_victories = redis.from_url(REDIS_URL, decode_responses=True)
 MAIN_STATE = 'main'
 QUESTION = 'question_date'
 REPLY = 'reply_date'
@@ -32,21 +32,34 @@ def add_victories(user, score_num):
         score[user] = {"victories": 1, "defeats": 0}
 
 
-def save(key, value):
+def save_state(key, value):
     if REDIS_URL:
-        redis_db = redis.from_url(REDIS_URL, decode_responses=True)
-        redis_db.set(key, value)
+        redis_states = redis.from_url(REDIS_URL, decode_responses=True)
+        redis_states.set(key, value)
     else:
         states[key] = value
 
 
-def load(key):
+def load_state(key):
     if REDIS_URL:
-        redis_db = redis.from_url(REDIS_URL, decode_responses=True)
-        return redis_db.get(key) or MAIN_STATE
+        redis_states = redis.from_url(REDIS_URL, decode_responses=True)
+        return redis_states.get(key) or MAIN_STATE
     else:
         return states.get(key) or MAIN_STATE
 
+def save_victory(key, value):
+    if REDIS_URL:
+        redis_victories = redis.from_url(REDIS_URL, decode_responses=True)
+        redis_victories.set(key, value)
+    else:
+        victories[key] = value
+
+def load_victory(key):
+    if REDIS_URL:
+        redis_victories = redis.from_url(REDIS_URL, decode_responses=True)
+        return redis_victories.get(key)
+    else:
+        return victories.get(key)
 
 token = os.environ["TELEGRAM_TOKEN"]
 
@@ -59,7 +72,7 @@ def dispatcher(message):
 
     user_id = message.from_user.id
     # state = states.get(user_id, MAIN_STATE)
-    state = load(str(message.from_user.id))
+    state = load_state(str(message.from_user.id))
 
     # # save('state:{user_id}'.format(message.from_user.id), MAIN_STATE)
     # # load('state:{user_id}'.format(message.from_user.id))
@@ -81,12 +94,12 @@ def main_handler(message):
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
-        save(str(message.from_user.id), MAIN_STATE)
+        save_state(str(message.from_user.id), MAIN_STATE)
 
     elif message.text == 'Привет':
         bot.send_message(message.from_user.id, 'Ну привет')
         # states[message.from_user.id] = QUESTION
-        save(str(message.from_user.id), QUESTION)
+        save_state(str(message.from_user.id), QUESTION)
 
 
 def question_date(message):
@@ -96,8 +109,9 @@ def question_date(message):
         result = requests.get(api_url).json()
         print(result)
         victory = result['answers'][0]
-        victories['r'] = victory
-        print(victories)
+        #victories['right'] = victory
+        save_victory ('right', victory)
+        print(redis_victories)
 
         import random
         random.shuffle(result['answers'])
@@ -115,7 +129,7 @@ def question_date(message):
 
         bot.send_message(message.from_user.id, text, reply_markup=markup)
         # states[message.from_user.id] = REPLY
-        save(str(message.from_user.id), REPLY)
+        save_state(str(message.from_user.id), REPLY)
 
     elif message.text == 'Покажи счет':
         bot.send_message(message.from_user.id, 'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
@@ -123,22 +137,22 @@ def question_date(message):
     else:
         bot.reply_to(message, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
-        save(str(message.from_user.id), MAIN_STATE)
+        save_state(str(message.from_user.id), MAIN_STATE)
 
 
 def reply_date(message):
-    if message.text in victories['r']:
+    if message.text in victories['right']:
         add_victories(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = QUESTION
-        save(str(message.from_user.id), QUESTION)
+        save_state(str(message.from_user.id), QUESTION)
     else:
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
-        save(str(message.from_user.id), MAIN_STATE)
+        save_state(str(message.from_user.id), MAIN_STATE)
 
 
 bot.polling()
