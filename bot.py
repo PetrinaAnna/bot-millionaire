@@ -1,4 +1,3 @@
-Petrina Anna, [24.12.19 23:57]
 import os
 import redis
 
