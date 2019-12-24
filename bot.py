@@ -11,7 +11,7 @@ MAIN_STATE = 'main'
 QUESTION = 'question_date'
 REPLY = 'reply_date'
 STOP = 'stop'
-SCORE ='score'
+COUNT ='count'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 correct_answer = {}
 states = {}
@@ -76,8 +76,8 @@ def dispatcher(message):
         reply_date(message)
     elif state == STOP:
         stop(message)
-    elif state == SCORE:
-        score(message)
+    elif state == COUNT:
+        count(message)
 
 
 def main_handler(message):
@@ -154,13 +154,13 @@ def stop(message):
         bot.send_message(message.from_user.id, 'Показать Ваш счет?')
         save(str(message.from_user.id), SCORE)
 
-def score(message):
+def count(message):
     if message.text == 'Да':
-    bot.send_message(message.from_user.id,
+     bot.send_message(message.from_user.id,
                                  'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
-    elif message.text == 'Нет':
+     elif message.text == 'Нет':
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
 
