@@ -73,7 +73,7 @@ def dispatcher(message):
         question_date(message)
     elif state == REPLY:
         reply_date(message)
-    elif state == STOP
+    elif state == STOP:
         stop(message)
 
 
