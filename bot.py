@@ -101,7 +101,7 @@ def question_date(message):
         requests.get(api_url).json()
         result = requests.get(api_url).json()
         print(result)
-        victory = result['answers'][1]
+        victory = result['answers'](int([0]))
         # correct_answers['right'] = victory
         save('right', victory)
         print(victory)
