@@ -11,6 +11,7 @@ MAIN_STATE = 'main'
 QUESTION = 'question_date'
 REPLY = 'reply_date'
 STOP = 'stop'
+SCORE ='score'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 correct_answer = {}
 states = {}
@@ -75,6 +76,8 @@ def dispatcher(message):
         reply_date(message)
     elif state == STOP:
         stop(message)
+    elif state == SCORE:
+        score(message)
 
 
 def main_handler(message):
@@ -139,23 +142,25 @@ def reply_date(message):
     elif message.text != correct_answer:
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
-        bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
+        bot.send_message(message.from_user.id, 'Не правильно! Закончить игру?', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), STOP)
 
 def stop(message):
-    if message.text == 'Жаль':
-        bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
-        if message.text == 'Нет':
-            save(str(message.from_user.id), QUESTION)
-        elif message.text == 'Да':
-            bot.send_message(message.from_user.id, 'Показать Ваш счет?')
-            if message.text == 'Да':
-                bot.send_message(message.from_user.id,
+    if message.text == 'Нет':
+        bot.send_message(message.from_user.id, 'Тогда продолжим')
+        save(str(message.from_user.id), QUESTION)
+    elif message.text == 'Да':
+        bot.send_message(message.from_user.id, 'Показать Ваш счет?')
+        save(str(message.from_user.id), SCORE)
+
+def score(message):
+    if message.text == 'Да':
+    bot.send_message(message.from_user.id,
                                  'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
-            elif message.text == 'Нет':
+    elif message.text == 'Нет':
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
 
