@@ -152,7 +152,7 @@ def stop(message):
         save(str(message.from_user.id), QUESTION)
     elif message.text == 'Да':
         bot.send_message(message.from_user.id, 'Показать Ваш счет?')
-        save(str(message.from_user.id), SCORE)
+        save(str(message.from_user.id), COUNT)
 
 def count(message):
     if message.text == 'Да':
