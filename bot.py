@@ -15,21 +15,21 @@ COUNT ='count'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 correct_answer = {}
 states = {}
-score = {'victories': 0, 'defeats': 0}
+score = { }
 
 
-def add_defeats(user, score_num):
-    if user in score:
-        score[user]['defeats'] += score_num
+def add_defeats(user_id, score_num):
+    if user_id in score:
+        score[user_id]['defeats'] += score_num
     else:
-        score[user] = {"victories": 0, "defeats": 1}
+        score[user_id] = {"victories": 0, "defeats": 1}
 
 
-def add_victories(user, score_num):
-    if user in score:
-        score[user]['victories'] += score_num
+def add_victories(user_id, score_num):
+    if user_id in score:
+        score[user_id]['victories'] += score_num
     else:
-        score[user] = {"victories": 1, "defeats": 0}
+        score[user_id] = {"victories": 1, "defeats": 0}
 
 
 def save(key, value):
@@ -157,7 +157,7 @@ def stop(message):
 def count(message):
      if message.text == 'Да':
         bot.send_message(message.from_user.id,
-                                 'Побед: ' + str(score['user']['victories']) + ' Поражений: ' + str(score['user']['defeats']))
+                                 'Побед: ' + str(score[message.from_user.id]['victories']) + ' Поражений: ' + str(score[message.from_user.id]['defeats']))
               # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
      elif message.text == 'Нет':
