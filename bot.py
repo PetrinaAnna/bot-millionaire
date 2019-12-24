@@ -155,14 +155,14 @@ def stop(message):
         save(str(message.from_user.id), COUNT)
 
 def count(message):
-    if message.text == 'Да':
-     bot.send_message(message.from_user.id,
+     if message.text == 'Да':
+        bot.send_message(message.from_user.id,
                                  'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
-                # states[message.from_user.id] = MAIN_STATE
-                save(str(message.from_user.id), MAIN_STATE)
+              # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
      elif message.text == 'Нет':
-                # states[message.from_user.id] = MAIN_STATE
-                save(str(message.from_user.id), MAIN_STATE)
+      # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
 
 
 bot.polling()
