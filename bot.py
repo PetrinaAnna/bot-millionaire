@@ -129,7 +129,6 @@ def question_date(message):
     # states[message.from_user.id] = MAIN_STATE
     # save(str(message.from_user.id), MAIN_STATE)
 
-Petrina Anna, [24.12.19 23:57]
 def reply_date(message):
     # if message.text in victories['right']:
     correct_answer = load('right')
