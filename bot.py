@@ -1,3 +1,4 @@
+Petrina Anna, [24.12.19 23:57]
 import os
 import redis
 
@@ -18,11 +19,11 @@ states = {}
 score = { }
 
 
-#def add_defeats(user_id, score_num):
-    #if user_id in score:
-        #score[user_id]['defeats'] += score_num
-    #else:
-        #score[user_id] = {"victories": 0, "defeats": 1}
+def add_defeats(user_id, score_num):
+    if user_id in score:
+        score[user_id]['defeats'] += score_num
+    else:
+        score[user_id] = {"victories": 0, "defeats": 1}
 
 
 def add_victories(user_id, score_num):
@@ -129,20 +130,18 @@ def question_date(message):
     # states[message.from_user.id] = MAIN_STATE
     # save(str(message.from_user.id), MAIN_STATE)
 
-
+Petrina Anna, [24.12.19 23:57]
 def reply_date(message):
     # if message.text in victories['right']:
     correct_answer = load('right')
     if message.text == correct_answer:
-        score[str(message.from_user.id)]['victories'] += 1
-        #add_victories(message.from_user.id, 1)
+        add_victories(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
     elif message.text != correct_answer:
-        #add_defeats(message.from_user.id, 1)
-        score[str(message.from_user.id)]['defeats'] += 1
+        add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно! Закончить игру?', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
@@ -159,7 +158,7 @@ def stop(message):
 def count(message):
      if message.text == 'Да':
         bot.send_message(message.from_user.id,
-                                 'Побед: ' + str(score[str(message.from_user.id)]['victories']) + ' Поражений: ' + str(score[str(message.from_user.id)]['defeats']))
+                                 'Побед: ' + str(score[message.from_user.id]['victories']) + ' Поражений: ' + str(score[message.from_user.id]['defeats']))
               # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
      elif message.text == 'Нет':
