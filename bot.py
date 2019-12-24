@@ -122,7 +122,7 @@ def question_date(message):
     #else:
         #bot.send_message(message.from_user.id, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
-        save(str(message.from_user.id), MAIN_STATE)
+        #save(str(message.from_user.id), MAIN_STATE)
 
 
 def reply_date(message):
