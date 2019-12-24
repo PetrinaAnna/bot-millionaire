@@ -148,7 +148,7 @@ def reply_date(message):
         elif message.text == 'Нет':
             # states[message.from_user.id] = MAIN_STATE
             save(str(message.from_user.id), MAIN_STATE)
-    elif message.text != correct_answer:
+    else:
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
