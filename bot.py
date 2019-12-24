@@ -46,6 +46,7 @@ def load(key):
     else:
         return states.get(key) or MAIN_STATE
 
+
 token = os.environ["TELEGRAM_TOKEN"]
 
 bot: TeleBot = telebot.TeleBot(token)
@@ -77,25 +78,27 @@ def dispatcher(message):
 def main_handler(message):
     if message.text == '/start':
         reset_markup = types.ReplyKeyboardRemove()
-        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"', reply_markup=reset_markup)
+        bot.send_message(message.from_user.id, 'Это бот-игра в "Кто хочет стать миллионером"',
+                         reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
 
     elif message.text == 'Задай мне вопрос':
-        bot.send_message(message.from_user.id, 'Секундочку, только уточню некоторые детали:на вопросы какой сложности Вы хотели бы отвечать? выберите 1, 2 или 3')
+        bot.send_message(message.from_user.id,
+                         'Секундочку, только уточню некоторые детали:на вопросы какой сложности Вы хотели бы отвечать? выберите 1, 2 или 3')
         # states[message.from_user.id] = QUESTION
         save(str(message.from_user.id), QUESTION)
 
 
 def question_date(message):
-    if message.text =='Задай мне вопрос'or 'Ещё!':
+    if message.text == 'Задай мне вопрос' or 'Ещё!':
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
         print(result)
         victory = result['answers'][0]
-        #correct_answers['right'] = victory
-        save('right',victory)
+        # correct_answers['right'] = victory
+        save('right', victory)
         print(victory)
 
         import random
@@ -116,12 +119,14 @@ def question_date(message):
         # states[message.from_user.id] = REPLY
         save(str(message.from_user.id), REPLY)
 
-    #else:
-        #bot.send_message(message.from_user.id, 'Я тебя не понял')
-        # states[message.from_user.id] = MAIN_STATE
-        #save(str(message.from_user.id), MAIN_STATE)
+    # else:
+    # bot.send_message(message.from_user.id, 'Я тебя не понял')
+    # states[message.from_user.id] = MAIN_STATE
+    # save(str(message.from_user.id), MAIN_STATE)
+
+
 def reply_date(message):
-    #if message.text in victories['right']:
+    # if message.text in victories['right']:
     correct_answer = load('right')
     if message.text == correct_answer:
         add_victories(message.from_user.id, 1)
@@ -135,8 +140,10 @@ def reply_date(message):
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), STOP)
- def stop (message):
-     if message.text == 'Cтоп игра!':
+
+
+def stop(message):
+    if message.text == 'Cтоп игра!':
         bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
         if message.text == 'Нет':
             save(str(message.from_user.id), QUESTION)
@@ -150,8 +157,6 @@ def reply_date(message):
             elif message.text == 'Нет':
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
-
-
 
 
 bot.polling()
