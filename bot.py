@@ -157,7 +157,7 @@ def stop(message):
 def count(message):
      if message.text == 'Да':
         bot.send_message(message.from_user.id,
-                                 'Побед: ' + str(score[message.from_user.id]['victories']) + ' Поражений: ' + str(score[message.from_user.id]['defeats']))
+                                 'Побед: ' + str(score[str(message.from_user.id)]['victories']) + ' Поражений: ' + str(score[str(message.from_user.id)]['defeats']))
               # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), MAIN_STATE)
      elif message.text == 'Нет':
