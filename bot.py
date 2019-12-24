@@ -90,7 +90,7 @@ def main_handler(message):
 
 
 def question_date(message):
-    #if message.text == :
+    if message.text =='Задай мне вопрос'or 'Ещё!':
         import requests
         requests.get(api_url).json()
         result = requests.get(api_url).json()
@@ -117,23 +117,11 @@ def question_date(message):
         bot.send_message(message.from_user.id, text, reply_markup=markup)
         # states[message.from_user.id] = REPLY
         save(str(message.from_user.id), REPLY)
-       # states[message.from_user.id] = REPLY
-        save(str(message.from_user.id), REPLY)
+
     #else:
         #bot.send_message(message.from_user.id, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
         #save(str(message.from_user.id), MAIN_STATE)
-
-
-def reply_date(message):
-    #if message.text in victories['right']:
-    correct_answer = load('right')
-    if message.text == correct_answer:
-        add_victories(message.from_user.id, 1)
-        reset_markup = types.ReplyKeyboardRemove()
-        bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
-        # states[message.from_user.id] = QUESTION
-        save(str(message.from_user.id), QUESTION)
     elif message.text == 'Cтоп игра!':
         bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
         if message.text == 'Нет':
@@ -145,9 +133,20 @@ def reply_date(message):
                                  'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
                 # states[message.from_user.id] = MAIN_STATE
                 save(str(message.from_user.id), MAIN_STATE)
-        elif message.text == 'Нет':
-            # states[message.from_user.id] = MAIN_STATE
-            save(str(message.from_user.id), MAIN_STATE)
+            elif message.text == 'Нет':
+                # states[message.from_user.id] = MAIN_STATE
+                save(str(message.from_user.id), MAIN_STATE)
+
+
+def reply_date(message):
+    #if message.text in victories['right']:
+    correct_answer = load('right')
+    if message.text == correct_answer:
+        add_victories(message.from_user.id, 1)
+        reset_markup = types.ReplyKeyboardRemove()
+        bot.send_message(message.from_user.id, 'Правильно', reply_markup=reset_markup)
+        # states[message.from_user.id] = QUESTION
+        save(str(message.from_user.id), QUESTION)
     else:
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
