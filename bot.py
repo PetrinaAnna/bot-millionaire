@@ -143,9 +143,8 @@ def reply_date(message):
         # states[message.from_user.id] = MAIN_STATE
         save(str(message.from_user.id), STOP)
 
-
 def stop(message):
-    if message.text == 'Cтоп игра!':
+    #if message.text == 'Cтоп игра!':
         bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
         if message.text == 'Нет':
             save(str(message.from_user.id), QUESTION)
