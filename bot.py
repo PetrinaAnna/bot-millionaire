@@ -149,8 +149,8 @@ def reply_date(message):
         add_defeats(message.from_user.id, 1)
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
-        # states[message.from_user.id] = QUESTION
-        save(str(message.from_user.id), QUESTION)
+        # states[message.from_user.id] = MAIN_STATE
+        save(str(message.from_user.id), MAIN_STATE)
 
 
 
