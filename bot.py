@@ -10,7 +10,7 @@ redis_db = redis.from_url(REDIS_URL, decode_responses=True)
 MAIN_STATE = 'main'
 QUESTION = 'question_date'
 REPLY = 'reply_date'
-
+STOP = 'stop'
 api_url = 'https://stepik.akentev.com/api/millionaire'
 correct_answer = {}
 states = {}
@@ -120,22 +120,6 @@ def question_date(message):
         #bot.send_message(message.from_user.id, 'Я тебя не понял')
         # states[message.from_user.id] = MAIN_STATE
         #save(str(message.from_user.id), MAIN_STATE)
-    elif message.text == 'Cтоп игра!':
-        bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
-        if message.text == 'Нет':
-            save(str(message.from_user.id), QUESTION)
-        elif message.text == 'Да':
-            bot.send_message(message.from_user.id, 'Показать Ваш счет?')
-            if message.text == 'Да':
-                bot.send_message(message.from_user.id,
-                                 'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
-                # states[message.from_user.id] = MAIN_STATE
-                save(str(message.from_user.id), MAIN_STATE)
-            elif message.text == 'Нет':
-                # states[message.from_user.id] = MAIN_STATE
-                save(str(message.from_user.id), MAIN_STATE)
-
-
 def reply_date(message):
     #if message.text in victories['right']:
     correct_answer = load('right')
@@ -150,7 +134,23 @@ def reply_date(message):
         reset_markup = types.ReplyKeyboardRemove()
         bot.send_message(message.from_user.id, 'Не правильно', reply_markup=reset_markup)
         # states[message.from_user.id] = MAIN_STATE
-        save(str(message.from_user.id), MAIN_STATE)
+        save(str(message.from_user.id), STOP)
+ def stop (message):
+     if message.text == 'Cтоп игра!':
+        bot.send_message(message.from_user.id, 'Вы хотите закончить игру?')
+        if message.text == 'Нет':
+            save(str(message.from_user.id), QUESTION)
+        elif message.text == 'Да':
+            bot.send_message(message.from_user.id, 'Показать Ваш счет?')
+            if message.text == 'Да':
+                bot.send_message(message.from_user.id,
+                                 'Побед: ' + str(score['victories']) + ' Поражений: ' + str(score['defeats']))
+                # states[message.from_user.id] = MAIN_STATE
+                save(str(message.from_user.id), MAIN_STATE)
+            elif message.text == 'Нет':
+                # states[message.from_user.id] = MAIN_STATE
+                save(str(message.from_user.id), MAIN_STATE)
+
 
 
 
